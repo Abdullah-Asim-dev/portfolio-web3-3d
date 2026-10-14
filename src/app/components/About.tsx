@@ -1,200 +1,176 @@
+import { Download } from 'lucide-react';
 
-'use client';
+/* =========================================================
+   CONTENT: edit everything here
+   Items marked TODO are placeholders until you send real details.
+========================================================= */
 
-import React from 'react';
+// TODO: put your resume in /public and make sure the name matches
+const CV_URL = '/cv.pdf';
 
-export default function AboutSection() {
+const ABOUT = {
+  headline: 'I build web products with AI built in.',
+  paragraphs: [
+    "I'm a full-stack and AI developer based in Lahore. Over the past year I've worked remotely across web development, AI features and data analysis, and I've built more than 10 projects, from full-stack web apps to AI-powered tools and automations.",
+    // TODO: replace the second sentence with how you really work
+    "I studied Computer Science through Matric and Intermediate (ICS), then trained in NexSkill's Web with AI course. I work in small, clear steps: understand the problem first, ship something working early, and keep clients updated along the way.",
+  ],
+};
+
+const FACTS: { label: string; value: string }[] = [
+  { label: 'Based in', value: 'Lahore, Pakistan' },
+  { label: 'Experience', value: '1 year, remote' },
+  { label: 'Projects', value: '10+' },
+  { label: 'Languages', value: 'English' }, // TODO: add Urdu if you like
+  { label: 'Open to', value: 'Remote jobs and freelance projects' },
+];
+
+type Job = {
+  role: string;
+  meta: string;
+  summary?: string;
+  points?: string[];
+};
+
+// Newest first
+const EXPERIENCE: Job[] = [
+  {
+    role: 'Freelance Developer',
+    meta: 'Lahore, remote · Present',
+    summary:
+      'Building web and AI projects for local clients, and growing my Upwork and Fiverr profiles.',
+  },
+  {
+    // TODO: add company name and exact dates, and a number or result per point
+    role: 'Full-Stack Developer, AI Developer & Data Analyst',
+    meta: 'Remote · 1 year',
+    points: [
+      'Built and shipped full-stack web applications, from interface to database.',
+      'Added AI features and automation workflows to products.',
+      'Cleaned and analysed data to support day-to-day decisions.',
+    ],
+  },
+];
+
+type Study = { title: string; detail?: string; year?: string };
+
+// TODO: add years if you want them shown
+const EDUCATION: Study[] = [
+  { title: 'Web with AI', detail: 'NexSkill' },
+  { title: 'Intermediate in Computer Science (ICS)' },
+  { title: 'Matric (Computer Science)' },
+];
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+export default function About() {
   return (
-    <section
-      id="about"
-      className="relative mx-auto block w-full max-w-7xl px-4 py-24 md:px-8"
-    >
-      {/* Header */}
-      <div className="relative z-20 mb-16 flex w-full flex-col items-center justify-center text-center">
-        <h2 className="bg-gradient-to-r from-[#A1CCDC] to-[#096B90] bg-clip-text text-4xl font-black uppercase tracking-wider text-transparent md:text-5xl">
-          About Me
-        </h2>
+    <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:pl-28 lg:pr-10">
+      <div className="grid gap-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-20">
+        {/* Left: story, facts, actions */}
+        <div>
+          <h2 className="max-w-xl text-3xl font-bold leading-tight text-ink sm:text-4xl lg:text-5xl">
+            {ABOUT.headline}
+          </h2>
 
-        <div className="mt-4 h-[2px] w-20 rounded-full bg-gradient-to-r from-[#096B90] via-[#A1CCDC] to-[#096B90]" />
-      </div>
-
-      {/* Main Grid */}
-      <div className="relative z-10 grid w-full grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
-
-        {/* Left: Bio */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.07] bg-[#07101a]/80 p-6 transition-transform duration-300 hover:-translate-y-1 hover:border-[#096B90]/40 lg:col-span-7">
-
-          <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#096B90]/40 to-transparent" />
-
-          <div className="space-y-6">
-            <h3 className="text-2xl font-black leading-tight text-white">
-              Building The Future of{' '}
-              <span className="text-[#A1CCDC]">
-                Web & AI Systems
-              </span>
-            </h3>
-
-            <p className="text-sm font-medium leading-relaxed text-gray-400">
-              I am a{' '}
-              <strong className="text-gray-300">
-                Full-Stack Developer
-              </strong>{' '}
-              focused on building modern web applications and practical AI-powered
-              solutions. My journey started with an ICS Computer Science
-              background, where I developed a strong foundation in programming
-              and computer science.
-            </p>
-
-            <p className="text-sm font-medium leading-relaxed text-gray-400">
-              I work with technologies such as{' '}
-              <strong className="text-gray-300">
-                React, Next.js, Node.js, Express, MongoDB, Python
-              </strong>{' '}
-              and automation tools like{' '}
-              <strong className="text-gray-300">
-                n8n
-              </strong>{' '}
-              to build useful, responsive, and scalable digital experiences.
-            </p>
+          <div className="mt-8 max-w-xl space-y-5 text-base leading-relaxed text-muted sm:text-lg">
+            {ABOUT.paragraphs.map((text) => (
+              <p key={text}>{text}</p>
+            ))}
           </div>
 
-          {/* Stats */}
-          <div className="mt-8 space-y-6 border-t border-white/[0.06] pt-5">
-            <div className="grid grid-cols-3 gap-3 text-center text-xs">
-              
-              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
-                <span className="block text-lg font-bold text-[#A1CCDC]">
-                  6+
-                </span>
-                <span className="font-bold text-gray-500">
-                  Projects
-                </span>
+          <dl className="glass mt-10 grid max-w-xl gap-x-8 gap-y-5 rounded-2xl p-6 sm:grid-cols-2">
+            {FACTS.map((fact) => (
+              <div key={fact.label}>
+                <dt className="text-sm text-muted">{fact.label}</dt>
+                <dd className="mt-1 font-medium text-ink">{fact.value}</dd>
               </div>
+            ))}
+          </dl>
 
-              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
-                <span className="block text-lg font-bold text-[#A1CCDC]">
-                  24+
-                </span>
-                <span className="font-bold text-gray-500">
-                  Repositories
-                </span>
-              </div>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <a
+              href={"Abdullah_Asim.pdf"}
+              download
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-primary to-primary-deep px-6 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.45)] transition-shadow duration-300 hover:shadow-[0_0_34px_rgba(139,92,246,0.7)] motion-reduce:transition-none"
+            >
+              <Download size={16} strokeWidth={2.5} />
+              Download CV
+            </a>
 
-              <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
-                <span className="block text-lg font-bold text-[#A1CCDC]">
-                  100%
-                </span>
-                <span className="font-bold text-gray-500">
-                  Focus
-                </span>
-              </div>
-
-            </div>
-
-            {/* Links */}
-            <div className="flex gap-3">
-              <a
-                href="https://github.com/Abdullah-Asim-dev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-xs font-bold uppercase text-white transition-colors duration-300 hover:border-[#096B90]/40 hover:bg-white/[0.08]"
-              >
-                GitHub
-              </a>
-
-              <a
-                href="https://www.linkedin.com/in/abdullah-asim-dev/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl border border-[#096B90]/30 bg-[#096B90]/10 px-4 py-2.5 text-xs font-bold uppercase text-[#A1CCDC] transition-colors duration-300 hover:bg-[#096B90] hover:text-white"
-              >
-                LinkedIn
-              </a>
-            </div>
+            <a
+              href="#contact"
+              className="inline-flex items-center rounded-full border border-line px-6 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:border-accent/60 hover:text-accent motion-reduce:transition-none"
+            >
+              Let&apos;s talk
+            </a>
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="flex flex-col gap-4 lg:col-span-5">
+        {/* Right: experience timeline + education */}
+        <div>
+          <h3 className="font-display text-2xl font-semibold text-ink">
+            Experience
+          </h3>
 
-          {/* Academic */}
-          <div className="group flex flex-1 flex-col justify-center rounded-2xl border border-white/[0.07] bg-[#07101a]/80 p-5 transition-transform duration-300 hover:-translate-y-1 hover:border-[#096B90]/30">
-            <span className="w-fit rounded bg-[#096B90]/10 px-2 py-1 text-[10px] font-bold uppercase text-[#A1CCDC]">
-              Academic Base
-            </span>
+          <ol className="relative mt-8 space-y-10 border-l border-line pl-8">
+            {EXPERIENCE.map((job) => (
+              <li key={job.role} className="relative">
+                <span
+                  aria-hidden
+                  className="absolute -left-[38px] top-1.5 h-3 w-3 rounded-full border-2 border-accent bg-canvas shadow-[0_0_10px_rgba(34,211,238,0.6)]"
+                />
 
-            <h4 className="mt-2 text-base font-bold text-white">
-              ICS Computer Science
-            </h4>
+                <h4 className="font-display text-lg font-semibold text-ink">
+                  {job.role}
+                </h4>
+                <p className="mt-1 text-sm text-primary-soft">{job.meta}</p>
 
-            <p className="mt-1 text-xs leading-relaxed text-gray-400">
-              2023 – 2025
-            </p>
+                {job.summary && (
+                  <p className="mt-3 leading-relaxed text-muted">
+                    {job.summary}
+                  </p>
+                )}
 
-            <p className="mt-2 text-xs leading-relaxed text-gray-500">
-              Built a foundation in programming, mathematics, algorithms,
-              and core computer science concepts.
-            </p>
-          </div>
+                {job.points && (
+                  <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed text-muted marker:text-primary-soft">
+                    {job.points.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ol>
 
-          {/* Development Track */}
-          <div className="group flex flex-1 flex-col justify-center rounded-2xl border border-white/[0.07] bg-[#07101a]/80 p-5 transition-transform duration-300 hover:-translate-y-1 hover:border-[#096B90]/30">
-            <span className="w-fit rounded bg-[#096B90]/10 px-2 py-1 text-[10px] font-bold uppercase text-[#A1CCDC]">
-              Development Track
-            </span>
+          <h3 className="mt-16 font-display text-2xl font-semibold text-ink">
+            Education and training
+          </h3>
 
-            <h4 className="mt-2 text-base font-bold text-white">
-              Full-Stack & AI Automation
-            </h4>
-
-            <p className="mt-2 text-xs leading-relaxed text-gray-500">
-              Building full-stack applications, backend APIs, AI integrations,
-              and workflow automation with modern development tools.
-            </p>
-          </div>
-
-          {/* Capabilities */}
-          <div className="group flex flex-1 flex-col justify-center rounded-2xl border border-white/[0.07] bg-[#07101a]/80 p-5 transition-transform duration-300 hover:-translate-y-1 hover:border-[#096B90]/30">
-            <h4 className="mb-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">
-              Current Capabilities
-            </h4>
-
-            <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-[11px] font-medium text-gray-400">
-              <div>
-                <span className="mr-1 text-[#096B90]">✓</span>
-                Web Applications
-              </div>
-
-              <div>
-                <span className="mr-1 text-[#096B90]">✓</span>
-                React Apps
-              </div>
-
-              <div>
-                <span className="mr-1 text-[#096B90]">✓</span>
-                REST APIs
-              </div>
-
-              <div>
-                <span className="mr-1 text-[#096B90]">✓</span>
-                AI Automation
-              </div>
-
-              <div>
-                <span className="mr-1 text-[#096B90]">✓</span>
-                Real-Time Apps
-              </div>
-
-              <div>
-                <span className="mr-1 text-[#096B90]">✓</span>
-                Backend Systems
-              </div>
-            </div>
-          </div>
-
+          <ul className="mt-6 divide-y divide-line border-y border-line">
+            {EDUCATION.map((study) => (
+              <li
+                key={study.title}
+                className="flex items-baseline justify-between gap-4 py-4"
+              >
+                <div>
+                  <p className="font-medium text-ink">{study.title}</p>
+                  {study.detail && (
+                    <p className="mt-0.5 text-sm text-muted">{study.detail}</p>
+                  )}
+                </div>
+                {study.year && (
+                  <span className="shrink-0 text-sm text-primary-soft">
+                    {study.year}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
-

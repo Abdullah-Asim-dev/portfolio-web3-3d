@@ -1,203 +1,259 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 
-// --- MAGNETIC BUTTON ---
-function LocalMagneticButton({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+/**
+ * Navbar: sticky morphing glass navbar
+ *
+ * Top of page  -> full width, transparent, soft violet glow behind it
+ * After scroll -> shrinks into a floating glass pill (blur + border + glow)
+ *
+ * Section ids expected on the page:
+ *   #about  #projects  #services  #techstack  #contact
+ * Add `scroll-mt-24` to each of those sections so the fixed navbar
+ * doesn't cover their headings when scrolled to.
+ */
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+const LINKS = [
+  { label: "About", id: "about" },
+  { label: "Projects", id: "projects" },
+  { label: "Services", id: "services" },
+  { label: "Tech Stack", id: "techstack" },
+  { label: "Contact", id: "contact" },
+] as const;
 
-    const { clientX, clientY } = e;
-    const { left, top, width, height } =
-      ref.current.getBoundingClientRect();
+const FOCUS_RING =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#22D3EE]";
 
-    const x = clientX - (left + width / 2);
-    const y = clientY - (top + height / 2);
+type HireButtonProps = {
+  onClick: () => void;
+  className?: string;
+};
 
-    setPosition({
-      x: x * 0.35,
-      y: y * 0.35,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-
+function HireButton({ onClick, className = "" }: HireButtonProps) {
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ x: position.x, y: position.y }}
-      transition={{
-        type: "spring",
-        stiffness: 140,
-        damping: 15,
-        mass: 0.1,
-      }}
-      className="inline-block"
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group inline-flex items-center gap-1.5 rounded-full border border-transparent bg-gradient-to-b from-[#8B5CF6] to-[#7C3AED] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.45)] transition-all duration-300 hover:border-[#22D3EE]/70 hover:shadow-[0_0_34px_rgba(139,92,246,0.7)] motion-reduce:transition-none ${FOCUS_RING} ${className}`}
     >
-      {children}
-    </motion.div>
+      Hire Me
+      <ArrowUpRight
+        size={16}
+        strokeWidth={2.5}
+        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+      />
+    </button>
   );
 }
 
-// --- MAIN NAVBAR ---
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState<string>("");
+  const [open, setOpen] = useState(false);
 
-  const menuItems = [
-    { name: "Home", id: "hero" },
-    { name: "Gallery", id: "gallery" },
-    { name: "About", id: "about" },
-    { name: "Services", id: "services" },
-    { name: "Projects", id: "projects" },
-    { name: "TechStack", id: "tech" },
-    { name: "Blog", id: "blog" },
-    { name: "Contact", id: "contact" },
-  ];
+  // 1) Morph the navbar once the page is scrolled
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      if (y < 120) setActive(""); // back on the hero: no link highlighted
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  const handleScroll = (id: string) => {
-    setIsOpen(false);
+  // 2) Scroll-spy: highlight the link of the section in view
+  useEffect(() => {
+    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
+      (el): el is HTMLElement => el !== null
+    );
+    if (sections.length === 0) return;
 
-    const element = document.getElementById(id);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
 
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // 3) Mobile menu: lock page scroll + close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  // 4) Close the mobile menu if the screen grows to desktop size
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const goTo = useCallback(
+    (id: string) => {
+      setOpen(false);
+      document.getElementById(id)?.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
         block: "start",
       });
-    }
-  };
+    },
+    [reduceMotion]
+  );
 
-  const handleConnectRedirect = () => {
-    window.open(
-      "https://www.linkedin.com/in/abdullah-asim-dev/",
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
+  const goTop = useCallback(() => {
+    setOpen(false);
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  }, [reduceMotion]);
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-[#040911]/30 backdrop-blur-md border-b border-[#096b90]/15 px-6 py-4 flex items-center justify-between transition-all duration-300">
+      <header
+        className={`fixed inset-x-0 top-0 z-50 flex justify-center transition-[padding] duration-300 ease-out motion-reduce:transition-none ${
+          scrolled ? "px-3 pt-3 md:px-4" : "px-0 pt-0"
+        }`}
+      >
+        {/* Violet glow behind the navbar (only at the top of the page) */}
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute inset-x-0 top-0 h-36 bg-[radial-gradient(60%_100%_at_50%_0%,rgba(139,92,246,0.20),transparent)] transition-opacity duration-500 motion-reduce:transition-none ${
+            scrolled ? "opacity-0" : "opacity-100"
+          }`}
+        />
 
-        {/* Logo */}
-        <LocalMagneticButton>
-          <div
-            onClick={() => handleScroll("hero")}
-            className="flex items-center gap-2.5 text-lg font-black tracking-wider text-[#a1ccdc] cursor-pointer px-2 py-1 select-none group"
+        <nav
+          aria-label="Primary"
+          className={`relative flex w-full items-center justify-between border transition-all duration-300 ease-out motion-reduce:transition-none md:grid md:grid-cols-[1fr_auto_1fr] ${
+            scrolled
+              ? "max-w-[1000px] rounded-[40px] border-white/10 bg-[#0A0A12]/60 px-5 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.45),0_0_40px_rgba(139,92,246,0.12)] backdrop-blur-xl backdrop-saturate-150"
+              : "max-w-[1400px] rounded-[0px] border-transparent bg-transparent px-6 py-5 md:px-10"
+          }`}
+        >
+          {/* Left: name */}
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              goTop();
+            }}
+            className={`flex items-center gap-2 justify-self-start rounded-md text-lg font-semibold tracking-tight text-[#F1F1F8] ${FOCUS_RING}`}
           >
-            <svg
-              className="w-5 h-5 text-[#096b90] group-hover:text-[#a1ccdc] group-hover:rotate-180 transition-all duration-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
-              />
-            </svg>
+            Abdullah Asim
+          </a>
 
-            <span className="font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-[#a1ccdc]">
-              AbdullahDev
-            </span>
-          </div>
-        </LocalMagneticButton>
+          {/* Center: links (desktop) */}
+          <ul className="hidden items-center gap-1 md:flex">
+            {LINKS.map(({ label, id }) => {
+              const isActive = active === id;
+              return (
+                <li key={id} className="relative">
+                  <a
+                    href={`#${id}`}
+                    aria-current={isActive ? "true" : undefined}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goTo(id);
+                    }}
+                    className={`block rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 motion-reduce:transition-none ${FOCUS_RING} ${
+                      isActive
+                        ? "text-white [text-shadow:0_0_14px_rgba(34,211,238,0.85)]"
+                        : "text-[#9A9AB5] hover:text-white"
+                    }`}
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-1 lg:gap-3">
-          {menuItems.map((item) => (
-            <LocalMagneticButton key={item.id}>
-              <button
-                type="button"
-                onClick={() => handleScroll(item.id)}
-                className="text-xs font-semibold text-zinc-400 hover:text-white hover:shadow-[0_0_12px_rgba(161,204,220,0.15)] transition-all duration-200 px-3 py-1.5 rounded-lg hover:bg-white/5"
-              >
-                {item.name}
-              </button>
-            </LocalMagneticButton>
-          ))}
-        </div>
-
-        {/* Right Utilities */}
-        <div className="flex items-center gap-4">
-
-          {/* Connect Button */}
-          <LocalMagneticButton>
+          {/* Right: Hire Me (desktop) + hamburger (mobile) */}
+          <div className="flex items-center justify-self-end">
+            <HireButton
+              onClick={() => goTo("contact")}
+              className="hidden md:inline-flex"
+            />
             <button
               type="button"
-              onClick={handleConnectRedirect}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-black uppercase tracking-wider text-white border border-[#096b90]/40 bg-gradient-to-r from-[#040911] via-[#096b90]/10 to-[#040911] hover:from-[#096b90] hover:to-[#a1ccdc] hover:text-[#040911] rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(9,107,144,0.15)] group/connect"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen((v) => !v)}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#F1F1F8] md:hidden ${FOCUS_RING}`}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 group-hover/connect:bg-white animate-pulse" />
-              Connect
+              {open ? <X size={20} /> : <Menu size={20} />}
             </button>
-          </LocalMagneticButton>
+          </div>
+        </nav>
+      </header>
 
-          {/* Mobile Menu */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex md:hidden flex-col gap-1.5 justify-center items-center w-8 h-8 rounded-lg bg-[#040911]/80 border border-[#096b90]/30 z-50 relative"
-          >
-            <span
-              className={`w-4 h-0.5 bg-white transition-transform duration-300 ${
-                isOpen ? "rotate-45 translate-y-1" : ""
-              }`}
-            />
-
-            <span
-              className={`w-4 h-0.5 bg-white transition-transform duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-1" : ""
-              }`}
-            />
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Drawer */}
+      {/* Mobile full-screen menu */}
       <AnimatePresence>
-        {isOpen && (
+        {open && (
           <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{
-              type: "spring",
-              damping: 26,
-              stiffness: 210,
-            }}
-            className="fixed inset-y-0 right-0 w-full max-w-sm z-40 bg-[#040911]/95 backdrop-blur-2xl border-l border-[#096b90]/20 shadow-2xl p-8 pt-28 flex flex-col gap-6 md:hidden"
+            id="mobile-menu"
+            key="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.25 }}
+            className="fixed inset-0 z-40 flex flex-col bg-[#0A0A12]/95 px-8 pb-10 pt-28 backdrop-blur-2xl md:hidden"
           >
-            <div className="flex flex-col gap-2">
-              <p className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase px-3 mb-2">
-                Navigation Matrix
-              </p>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(70%_100%_at_50%_0%,rgba(139,92,246,0.25),transparent)]"
+            />
 
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleScroll(item.id)}
-                  className="text-left text-xl font-bold text-zinc-300 hover:text-[#a1ccdc] hover:bg-[#096b90]/10 transition-all duration-200 py-3 px-3 rounded-xl border border-transparent hover:border-[#096b90]/20"
+            <ul className="relative flex flex-1 flex-col gap-2">
+              {LINKS.map(({ label, id }, i) => (
+                <motion.li
+                  key={id}
+                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: reduceMotion ? 0 : 0.05 * i, duration: 0.3 }}
                 >
-                  {item.name}
-                </button>
+                  <a
+                    href={`#${id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goTo(id);
+                    }}
+                    className={`block rounded-xl py-3 text-3xl font-semibold tracking-tight ${FOCUS_RING} ${
+                      active === id ? "text-[#22D3EE]" : "text-[#F1F1F8]"
+                    }`}
+                  >
+                    {label}
+                  </a>
+                </motion.li>
               ))}
-            </div>
+            </ul>
+
+            <HireButton
+              onClick={() => goTo("contact")}
+              className="relative w-full justify-center py-3.5 text-base"
+            />
           </motion.div>
         )}
       </AnimatePresence>

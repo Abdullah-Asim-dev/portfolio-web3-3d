@@ -1,80 +1,56 @@
-import type { Metadata } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import './globals.css';
+import { SITE, SITE_URL } from '@/lib/site';
 
-const siteUrl = "https://abdullahasim-dev.vercel.app";
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Abdullah Asim | Full-Stack Developer",
-    template: "%s | Abdullah Asim",
+    default: SITE.title,
+    template: '%s | Abdullah Asim',
   },
-
-  description:
-    "Abdullah Asim is a Full-Stack Developer specializing in React, Next.js, Node.js, SaaS applications, and AI automation.",
-
+  description: SITE.description,
   keywords: [
-    "Abdullah Asim",
-    "Abdullah Asim Dev",
-    "Abdullah Asim Developer",
-    "Full-Stack Developer",
-    "React Developer",
-    "Next.js Developer",
-    "AI Automation",
-    "Web Developer",
-    "Pakistan Developer",
+    'Abdullah Asim',
+    'full stack developer Pakistan',
+    'web developer Lahore',
+    'machine learning engineer',
+    'n8n automation expert',
+    'AI voice agent developer',
+    'cloud architecture web apps',
   ],
-
-  authors: [{ name: "Abdullah Asim" }],
-  creator: "Abdullah Asim",
-  publisher: "Abdullah Asim",
-
-  alternates: {
-    canonical: siteUrl,
-  },
-
-  openGraph: {
-    title: "Abdullah Asim | Full-Stack Developer",
-    description:
-      "Portfolio of Abdullah Asim — Full-Stack Developer specializing in React, Next.js, SaaS applications, and AI automation.",
-    url: siteUrl,
-    siteName: "Abdullah Asim",
-    type: "website",
-    locale: "en_US",
-    images: [
-      {
-        url: "/profile.webp",
-        width: 800,
-        height: 800,
-        alt: "Abdullah Asim - Full-Stack Developer",
-      },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "Abdullah Asim | Full-Stack Developer",
-    description:
-      "Full-Stack Developer specializing in React, Next.js, SaaS applications, and AI automation.",
-    images: ["/profile.webp"],
-  },
-
+  authors: [{ name: SITE.name, url: SITE_URL }],
+  creator: SITE.name,
+  alternates: { canonical: '/' },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
-
-  icons: {
-    icon: "/favicon.ico",
+  openGraph: {
+    type: 'website',
+    url: SITE_URL,
+    title: SITE.title,
+    description: SITE.description,
+    siteName: SITE.name,
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE.title,
+    description: SITE.description,
   },
 };
 
@@ -83,35 +59,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Abdullah Asim",
-    url: siteUrl,
-    jobTitle: "Full-Stack Developer",
-    description:
-      "Full-Stack Developer specializing in React, Next.js, Node.js, SaaS applications, and AI automation.",
-    image: `${siteUrl}/profile.webp`,
-    sameAs: [
-      "https://github.com/Abdullah-Asim-dev",
-      "https://www.linkedin.com/in/abdullah-asim-dev/",
-    ],
-  };
-
   return (
-    <html lang="en">
-      <body className="antialiased bg-[#040911]">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
-          }}
-        />
-
-        {children}
-
-        <GoogleAnalytics gaId="G-S923PMDYVR" />
-      </body>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

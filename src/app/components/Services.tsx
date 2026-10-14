@@ -1,214 +1,213 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
+import { motion, MotionConfig, type Variants } from 'framer-motion';
+import {
+  Globe,
+  Smartphone,
+  Bot,
+  PhoneCall,
+  Layers,
+  Gamepad2,
+  Server,
+  Wrench,
+  BrainCircuit,
+  Palette,
+  ArrowUpRight,
+} from 'lucide-react';
 
-const SERVICES_DATA = [
+/* =========================================================
+   CONTENT: edit everything here
+   Theme: bg #0B0B14 | surface #14142A | violet #8B5CF6 | cyan #22D3EE
+========================================================= */
+
+const SERVICES: {
+  title: string;
+  description: string;
+  tags: string[];
+  icon: ReactNode;
+}[] = [
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-        />
-      </svg>
-    ),
-    title: 'Web Development',
+    title: 'Website Development',
     description:
-      'Building responsive and scalable web applications with modern technologies and clean user experiences.',
+      'Fast, responsive websites for businesses and brands, built to load quickly and rank well.',
+    tags: ['Next.js', 'React', 'Tailwind CSS'],
+    icon: <Globe size={22} />,
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-        />
-      </svg>
-    ),
     title: 'App Development',
     description:
-      'Creating modern mobile applications with responsive interfaces and smooth user experiences.',
+      'Mobile and web apps with clean interfaces and a solid backend behind them.',
+    tags: ['React Native', 'Node.js', 'Firebase'],
+    icon: <Smartphone size={22} />,
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-        />
-      </svg>
-    ),
     title: 'Chatbot Development',
     description:
-      'Building conversational interfaces that help businesses automate support and improve customer interactions.',
+      'Chatbots that answer customers, capture leads and hand over to your team when needed.',
+    tags: ['OpenAI', 'WhatsApp', 'Website chat'],
+    icon: <Bot size={22} />,
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-        />
-      </svg>
-    ),
-    title: 'AI Automation',
+    title: 'AI Voice and Call Agents',
     description:
-      'Connecting tools, APIs, and business processes into practical automated workflows using AI and n8n.',
+      'Voice agents that answer calls, book appointments and follow up with customers around the clock.',
+    tags: ['Voice AI', 'Speech to text', 'Phone calls'],
+    icon: <PhoneCall size={22} />,
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-        />
-      </svg>
-    ),
-    title: 'AI Call Agents',
-    description:
-      'Developing voice-based AI systems for customer conversations, lead handling, and appointment workflows.',
-  },
-  {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-        />
-      </svg>
-    ),
-    title: 'AI Voice Agent',
-    description:
-      'Integrating real-time voice technologies to create natural and interactive AI-powered experiences.',
-  },
-  {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-        />
-      </svg>
-    ),
-    title: 'Cloud & Deployment',
-    description:
-      'Deploying web applications and backend services with practical cloud and hosting configurations.',
-  },
-  {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-        />
-      </svg>
-    ),
     title: 'SaaS Development',
     description:
-      'Building modern SaaS interfaces and application features with reusable and scalable components.',
+      'Complete SaaS products with login, subscriptions, dashboards and an admin panel.',
+    tags: ['Next.js', 'Auth', 'Payments'],
+    icon: <Layers size={22} />,
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
-        />
-      </svg>
-    ),
-    title: 'API & Backend Development',
+    title: 'Game Development',
     description:
-      'Developing REST APIs and backend services that connect applications, databases, and external services.',
+      'Playable games for web and mobile, from simple casual games to full gameplay systems.',
+    tags: ['Unity', 'JavaScript', 'Web games'],
+    icon: <Gamepad2 size={22} />,
   },
   {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-        />
-      </svg>
-    ),
+    title: 'API and Backend Development',
+    description:
+      'Secure, well documented APIs and databases that your apps and tools can rely on.',
+    tags: ['Node.js', 'Express', 'MongoDB'],
+    icon: <Server size={22} />,
+  },
+  {
+    title: 'Tools Development',
+    description:
+      'Custom tools and utilities that solve one problem well and save your team time.',
+    tags: ['Dashboards', 'Utilities', 'Browser tools'],
+    icon: <Wrench size={22} />,
+  },
+  {
+    title: 'AI Agents',
+    description:
+      'Agents that plan, use your tools and complete multi-step work without manual input.',
+    tags: ['LLMs', 'n8n', 'Automation'],
+    icon: <BrainCircuit size={22} />,
+  },
+  {
     title: 'Web Design',
     description:
-      'Designing clean, responsive, and modern interfaces focused on usability and strong visual presentation.',
+      'Modern, conversion-focused interface design, delivered as a clean layout ready to build.',
+    tags: ['UI design', 'Brand colors', 'Responsive'],
+    icon: <Palette size={22} />,
   },
 ];
 
+/* =========================================================
+   MOTION: one reveal when the grid scrolls into view
+========================================================= */
+
+const grid: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07 } },
+};
+
+const card: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+/* =========================================================
+   SERVICES
+========================================================= */
+
 export default function ServicesSection() {
   return (
-    <section
-      id="services"
-      className="relative mx-auto block w-full max-w-7xl px-4 py-24 md:px-8"
-    >
-      {/* Header */}
-      <div className="relative z-20 mb-16 flex w-full flex-col items-center justify-center text-center">
-        <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.35em] text-[#096B90]">
-          What I Build
-        </p>
+    <MotionConfig reducedMotion="user">
+      <section
+        className="relative mx-auto block w-full max-w-7xl px-4 py-20 md:px-8 lg:pl-28 lg:pr-10"
+      >
+        {/* Header */}
+        <div className="mb-14 flex w-full flex-col items-center text-center">
+          <h2 className="bg-gradient-to-r from-[#8B5CF6] to-[#22D3EE] bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent md:text-5xl">
+            Services
+          </h2>
+          <p className="mt-3 max-w-md text-sm text-[#9A9AB5]">
+            Everything I can build for your business, from a website to an AI
+            agent.
+          </p>
+          <div className="mt-5 h-[3px] w-24 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#22D3EE] shadow-[0_0_14px_rgba(139,92,246,0.7)]" />
+        </div>
 
-        <h2 className="text-4xl font-extrabold uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#A1CCDC] to-[#096B90] md:text-5xl">
-          My Services
-        </h2>
+        {/* Cards */}
+        <motion.ul
+          variants={grid}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-6"
+        >
+          {SERVICES.map((service, index) => (
+            <motion.li
+              key={service.title}
+              variants={card}
+              className={index === SERVICES.length - 1 ? 'lg:col-start-2' : ''}
+            >
+              <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-[#8B5CF6]/25 bg-[#14142A] p-4 transition-all duration-300 hover:-translate-y-2 sm:p-5 hover:border-[#22D3EE]/60 hover:shadow-[0_0_30px_rgba(34,211,238,0.18),0_18px_40px_rgba(139,92,246,0.15)]">
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/0 via-transparent to-[#22D3EE]/0 transition-all duration-500 group-hover:from-[#8B5CF6]/10 group-hover:to-[#22D3EE]/5" />
+                <div className="pointer-events-none absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-transparent to-transparent transition-all duration-500 group-hover:via-[#22D3EE]/70" />
 
-        <p className="mt-4 max-w-xl text-xs font-medium leading-6 tracking-wide text-zinc-500 md:text-sm">
-          Practical digital solutions across web development, applications,
-          AI integration, and automation.
-        </p>
+                <div className="relative">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl sm:mb-4 sm:h-11 sm:w-11 border border-[#8B5CF6]/30 bg-[#8B5CF6]/15 text-[#C4B5FD] transition-colors duration-300 group-hover:border-transparent group-hover:bg-gradient-to-br group-hover:from-[#8B5CF6] group-hover:to-[#22D3EE] group-hover:text-white">
+                    {service.icon}
+                  </div>
 
-        <div className="mt-5 h-px w-20 bg-gradient-to-r from-transparent via-[#A1CCDC] to-transparent" />
-      </div>
+                  <h3 className="mb-1.5 text-base font-bold leading-snug text-[#F1F1F8] sm:text-lg transition-colors duration-200 group-hover:text-[#22D3EE]">
+                    {service.title}
+                  </h3>
+                  <p className="mb-4 text-xs leading-relaxed text-[#9A9AB5] transition-colors sm:text-sm group-hover:text-[#C9C9DD]">
+                    {service.description}
+                  </p>
+                </div>
 
-      {/* Services Grid */}
-      <div className="relative z-10 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {SERVICES_DATA.map((service) => (
-          <article
-            key={service.title}
-            className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#07101a]/80 p-7 transition-transform duration-300 hover:-translate-y-1 hover:border-[#096B90]/40"
+                <div className="relative mt-auto flex flex-col items-start gap-3 border-t border-white/5 pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                  <div className="flex flex-wrap gap-2">
+                    {service.tags.map((tag, i) => (
+                      <span
+                        key={tag}
+                        className={`${i > 1 ? 'hidden sm:inline-block' : ''} rounded border border-white/5 bg-white/5 px-2 py-0.5 text-[10px] font-medium text-[#9A9AB5] transition-all sm:text-[11px] group-hover:border-[#22D3EE]/20 group-hover:bg-[#22D3EE]/10 group-hover:text-[#F1F1F8]`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C4B5FD] sm:text-sm transition-colors hover:text-[#22D3EE] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22D3EE]"
+                  >
+                    Get a quote
+                    <ArrowUpRight size={15} />
+                  </a>
+                </div>
+              </article>
+            </motion.li>
+          ))}
+        </motion.ul>
+
+        {/* Closing call to action */}
+        <div className="mt-14 flex flex-col items-center gap-4 text-center">
+          <p className="text-sm text-[#9A9AB5]">
+            Have something that is not on this list? Tell me what you need.
+          </p>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#6D4AE0] px-6 py-3 text-sm font-bold text-white shadow-[0_0_24px_rgba(139,92,246,0.45)] transition-transform duration-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22D3EE]"
           >
-            {/* Top Accent */}
-            <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#096B90]/0 to-transparent transition-opacity duration-300 group-hover:via-[#A1CCDC]/50" />
-
-            {/* Icon */}
-            <div className="mb-6 flex h-13 w-13 items-center justify-center rounded-xl border border-[#096B90]/20 bg-[#096B90]/10 text-[#A1CCDC] transition-all duration-300 group-hover:border-[#096B90]/50 group-hover:bg-[#096B90]/20 group-hover:text-white">
-              {service.icon}
-            </div>
-
-            {/* Title */}
-            <h3 className="mb-3 text-lg font-bold tracking-wide text-white transition-colors duration-300 group-hover:text-[#A1CCDC]">
-              {service.title}
-            </h3>
-
-            {/* Description */}
-            <p className="text-sm leading-6 text-zinc-500 transition-colors duration-300 group-hover:text-zinc-400">
-              {service.description}
-            </p>
-
-            {/* Bottom Detail */}
-            <div className="mt-6 h-px w-8 bg-[#096B90]/40 transition-all duration-300 group-hover:w-14 group-hover:bg-[#A1CCDC]/60" />
-          </article>
-        ))}
-      </div>
-    </section>
+            Start a project
+            <ArrowUpRight size={16} />
+          </a>
+        </div>
+      </section>
+    </MotionConfig>
   );
 }
