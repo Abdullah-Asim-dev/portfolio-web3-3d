@@ -17,11 +17,11 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
  */
 
 const LINKS = [
-  { label: "About", id: "#about" },
-  { label: "Projects", id: "#projects" },
-  { label: "Services", id: "#services" },
-  { label: "Tech Stack", id: "#techstack" },
-  { label: "Contact", id: "#contact" },
+  { label: "About", id: "about" },
+  { label: "Projects", id: "projects" },
+  { label: "Services", id: "services" },
+  { label: "Tech Stack", id: "techstack" },
+  { label: "Contact", id: "contact" },
 ] as const;
 
 const FOCUS_RING =
