@@ -5,13 +5,8 @@ import { Mic, Square, AudioLines, Loader2 } from 'lucide-react';
 
 type Status = 'idle' | 'listening' | 'thinking' | 'speaking';
 type Msg = { role: 'user' | 'assistant'; content: string };
-type Lang = 'en-US' | 'ur-PK';
 
-const LANGS: { code: Lang; label: string }[] = [
-  { code: 'en-US', label: 'English' },
-  { code: 'ur-PK', label: 'اردو' },
-];
-
+const LANG = 'en-US';
 const MAX_SILENCE = 3; // stop after this many empty turns in a row
 const SILENCE_MS = 1800; // wait this long after you stop talking before sending
 
@@ -24,23 +19,23 @@ const cleanForSpeech = (t: string) =>
     .replace(/\s{2,}/g, ' ')
     .trim();
 
+// Pick the best installed English voice (prefers natural/online voices)
+const pickVoice = (voices: SpeechSynthesisVoice[]) => {
+  const en = voices.filter((v) => v.lang.replace('_', '-').toLowerCase().startsWith('en'));
+  return en.find((v) => /natural|online/i.test(v.name)) || en[0];
+};
+
 export default function VoiceAgent() {
   const [status, setStatus] = useState<Status>('idle');
   const [active, setActive] = useState(false);
-  const [lang, setLang] = useState<Lang>('en-US');
   const [error, setError] = useState('');
   const [supported, setSupported] = useState(true);
 
   const recRef = useRef<any>(null);
   const activeRef = useRef(false);
-  const langRef = useRef<Lang>('en-US');
   const historyRef = useRef<Msg[]>([]);
   const silenceRef = useRef(0);
   const listenRef = useRef<() => void>(() => {});
-
-  useEffect(() => {
-    langRef.current = lang;
-  }, [lang]);
 
   useEffect(() => {
     const w = window as any;
@@ -72,14 +67,10 @@ export default function VoiceAgent() {
       return;
     }
     synth.cancel();
-    const l = langRef.current;
     const u = new SpeechSynthesisUtterance(cleanForSpeech(text));
-    u.lang = l;
-    const voices = synth.getVoices();
-    const v =
-      voices.find((x) => x.lang === l) ||
-      voices.find((x) => x.lang.startsWith(l.slice(0, 2)));
-    if (v) u.voice = v;
+    u.lang = LANG;
+    const voice = pickVoice(synth.getVoices());
+    if (voice) u.voice = voice;
     u.onend = resume;
     u.onerror = resume;
     setStatus('speaking');
@@ -95,7 +86,7 @@ export default function VoiceAgent() {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: next }),
+          body: JSON.stringify({ messages: next, lang: LANG }),
         });
         const data = await res.json().catch(() => ({}));
         if (!activeRef.current) return; // user pressed stop while waiting
@@ -123,7 +114,7 @@ export default function VoiceAgent() {
     setError('');
 
     const rec = new SR();
-    rec.lang = langRef.current;
+    rec.lang = LANG;
     rec.interimResults = true;
     rec.continuous = true; // keep listening through short pauses
     rec.maxAlternatives = 1;
@@ -218,28 +209,8 @@ export default function VoiceAgent() {
             </p>
           </div>
 
-          {/* Language */}
-          <div className="mt-4 flex justify-center">
-            <div className="flex gap-1 rounded-full border border-[#8B5CF6]/25 bg-[#0B0B14] p-1">
-              {LANGS.map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => !active && setLang(l.code)}
-                  disabled={active}
-                  className={`rounded-full px-5 py-1 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
-                    lang === l.code
-                      ? 'bg-gradient-to-r from-[#8B5CF6] to-[#6D4AE0] text-white'
-                      : 'text-[#9A9AB5] hover:text-[#F1F1F8]'
-                  }`}
-                >
-                  {l.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Orb */}
-          <div className="mt-4 flex flex-col items-center gap-2">
+          <div className="mt-5 flex flex-col items-center gap-2">
             {supported ? (
               <button
                 onClick={onOrb}
