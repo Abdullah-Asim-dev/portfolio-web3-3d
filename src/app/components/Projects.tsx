@@ -39,7 +39,7 @@ const PROJECTS_DATA = [
     description:
       'Advanced cryptographic authentication module structured around atomic access tokens, refresh tracking, and protected routing shields.',
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB'],
-    category: 'SaaS',
+    category: 'Development',
     liveLink: 'https://jwt-authicatication-xvlc.vercel.app/',
     githubLink: 'https://github.com/Abdullah-Asim-dev/JWT-Authicatication.git',
   },
@@ -48,7 +48,7 @@ const PROJECTS_DATA = [
     description:
       'A highly optimized, performant state monitoring utility application engineered with global state hooks and fluid dark glassmorphism.',
     tech: ['React.js', 'Redux Toolkit', 'Tailwind CSS'],
-    category: 'Tools',
+    category: 'Development',
     liveLink: 'https://redux-tool-kit-l7rk-mu.vercel.app/',
     githubLink: 'https://github.com/Abdullah-Asim-dev/Redux-Tool-Kit.git',
   },
@@ -57,7 +57,7 @@ const PROJECTS_DATA = [
     description:
       'Cryptographic micro-tool utilizing secure random parameters, custom length configurations, and native copy-to-clipboard interactions.',
     tech: ['HTML5', 'CSS3', 'JavaScript'],
-    category: 'Tools',
+    category: 'Development',
     liveLink: 'https://statuesque-zabaione-a8d6d4.netlify.app/',
     githubLink: 'https://github.com/Abdullah-Asim-dev/Password-Generator.git',
   },
@@ -66,11 +66,33 @@ const PROJECTS_DATA = [
     description:
       'A comprehensive atmospheric observation interface pulling real-time coordinates and parsing meteorological JSON layers.',
     tech: ['React.js', 'JavaScript', 'Weather API'],
-    category: 'SaaS',
+    category: 'Development',
     // NOTE: this live link is the same as JWT Authentication. Replace with the real weather app URL.
     liveLink: 'https://jwt-authicatication-xvlc.vercel.app/',
     githubLink: 'https://github.com/Abdullah-Asim-dev/React-Weather-App.git',
   },
+    {
+    title: 'Nexora AI – Full-StackChatbot Application',
+    description:
+      'Nexora AI is a full-stack AI-powered workspace built to deliver intelligent conversations through Google Gemini AI. It features JWT authentication, persistent chat history, Free and Pro subscription plans, payment submission and admin verification, and a responsive modern interface. Built with Next.js, React, TypeScript, Tailwind CSS, Node.js, Express.js, MongoDB, and REST APIs, the application demonstrates end-to-end development, AI integration, database management, and production deployment using Vercel and Render.',
+    tech: ['Google Gemini AI','TypeScript','REST API','JWT Authentication'],
+    category: 'SaaS',
+    // NOTE: this live link is the same as JWT Authentication. Replace with the real weather app URL.
+    liveLink: 'https://ai-chatbot-application-teal.vercel.app/',
+    githubLink: 'https://github.com/Abdullah-Asim-dev/Nexora-AI-Application.git',
+  },
+  {
+    title: 'AI SEO Audit Engine',
+    description:
+      'AI SEO Audit Engine is an AI-powered website auditing tool designed to help identify SEO issues and uncover optimization opportunities through an interactive dashboard. Built with a modern interface, it focuses on website analysis, technical SEO insights, and actionable recommendations to support better search visibility. The project demonstrates full-stack development, AI model integration, API handling, and modern dashboard design..',
+    tech: ['Next.js','AI Integration','Technical SEO','API Integration','Qwen AI'],
+    category: 'Tools',
+    // NOTE: this live link is the same as JWT Authentication. Replace with the real weather app URL.
+    liveLink: 'https://seo-audit-tool-five-tau.vercel.app/',
+    githubLink: 'https://github.com/Abdullah-Asim-dev/AI-SEO-Audit-.git',
+  },
+
+  
 ];
 
 export default function ProjectsSection() {
