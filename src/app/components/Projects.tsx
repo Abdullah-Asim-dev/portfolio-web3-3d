@@ -74,7 +74,7 @@ const PROJECTS_DATA = [
     {
     title: 'Nexora AI – Full-StackChatbot Application',
     description:
-      'Nexora AI is a full-stack AI-powered workspace built to deliver intelligent conversations through Google Gemini AI. It features JWT authentication, persistent chat history, Free and Pro subscription plans, payment submission and admin verification, and a responsive modern interface. Built with Next.js, React, TypeScript, Tailwind CSS, Node.js, Express.js, MongoDB, and REST APIs, the application demonstrates end-to-end development, AI integration, database management, and production deployment using Vercel and Render.',
+      'A full-stack AI workspace featuring Gemini-powered chat, JWT authentication, conversation history, and Free & Pro subscription plans.',
     tech: ['Google Gemini AI','TypeScript','REST API','JWT Authentication'],
     category: 'SaaS',
     // NOTE: this live link is the same as JWT Authentication. Replace with the real weather app URL.
@@ -84,7 +84,7 @@ const PROJECTS_DATA = [
   {
     title: 'AI SEO Audit Engine',
     description:
-      'AI SEO Audit Engine is an AI-powered website auditing tool designed to help identify SEO issues and uncover optimization opportunities through an interactive dashboard. Built with a modern interface, it focuses on website analysis, technical SEO insights, and actionable recommendations to support better search visibility. The project demonstrates full-stack development, AI model integration, API handling, and modern dashboard design..',
+      'An AI-powered SEO audit tool that analyzes websites, identifies optimization opportunities, and helps improve technical SEO and search visibility.',
     tech: ['Next.js','AI Integration','Technical SEO','API Integration','Qwen AI'],
     category: 'Tools',
     // NOTE: this live link is the same as JWT Authentication. Replace with the real weather app URL.
